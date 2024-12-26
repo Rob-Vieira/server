@@ -1,0 +1,26 @@
+{
+    "match":  [
+      {
+        "id": 1,
+        "created_at": "2024-12-24T15:28:01.850Z",
+        "players": [
+          {
+            "id": 1,
+            "money": 25000,
+            "locations": [
+              {
+                "id": 1,
+                "houses": 0
+              }
+            ],
+            "isBanker": false
+          }
+        ],
+        "remainingLocations": [1, 2, 3],
+        "started": true
+      }
+    ],
+    "setting": {
+      "autokey": 1
+    }
+  }
