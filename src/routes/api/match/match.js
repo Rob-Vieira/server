@@ -73,7 +73,7 @@ match.post('/match/enter', async (req, res) => {
     }
 });
 
-match.post('/match/location', async (req, res) => {
+match.post('/match/buy-location', async (req, res) => {
     const { playerID, matchID, locationID } = req.body;
 
     if (!playerID || !matchID || !locationID) {
@@ -86,9 +86,6 @@ match.post('/match/location', async (req, res) => {
     const match = db.one(matchID);
     
     if(match.started){
-        const locations = new Database();
-        await locations.openTable('locations');
-
         let location_selled = false
 
         for(let player in match.players){
@@ -108,7 +105,41 @@ match.post('/match/location', async (req, res) => {
             matches.update_one(matchID, match);
         }
         else{
+            return res.status(400).send({ error: 'Localização já foi comprada' });
+        }
+    }
+});
 
+match.post('/match/buy-house', async (req, res) => {
+    const { playerID, matchID, locationID } = req.body;
+
+    if (!playerID || !matchID || !locationID) {
+        return res.status(400).send({ error: 'Todos são obrigatórios!' });
+    }
+
+    const matches = new Database();
+    await matches.openTable(table);
+    
+    const match = db.one(matchID);
+    
+    if(match.started){
+        const playerIndex = match.players.findIndex((p) => p.id == playerID);
+        const player = match.players[playerIndex];
+
+        if(player){
+            const locationIndex = player.locations.findIndex((l) => l.id = locationID);
+            
+            if(match.players[playerID].locations[locationID].houses < 4){
+                match.players[playerID].locations[locationID].houses++;
+
+                matches.update_one(matchID, match);
+            }
+            else{
+                return res.status(400).send({ error: 'Essa localização já atigiu o máximo de casas.' });
+            }
+        }
+        else{
+            return res.status(400).send({ error: 'Jogador não encontrado.' });
         }
     }
 });
