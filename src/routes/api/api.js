@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import players from './players/players.js';
+import player from './player/player.js';
 import match from './match/match.js';
-import locations from './locations/locations.js';
+import location from './location/location.js';
 
 const api = Router();
 
-api.use('/', players);
-api.use('/', locations);
-api.use('/', match);
+api.use('/player', player);
+api.use('/location', location);
+api.use('/match', match);
 
 export default api;

@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { Database } from '../../../db/database.js';
-import players from '../players/players.js';
+import players from '../player/player.js';
 
 const match = Router();
 const table = 'match';
 
-match.post('/match', async (req, res) => {
+match.post('/', async (req, res) => {
     const { playerID } = req.body;
 
     if (!playerID) {
@@ -36,7 +36,7 @@ match.post('/match', async (req, res) => {
     });
 });
 
-match.post('/match/enter', async (req, res) => {
+match.post('/enter', async (req, res) => {
     const { playerID, matchID } = req.body;
 
     if (!playerID || !matchID) {
@@ -73,7 +73,7 @@ match.post('/match/enter', async (req, res) => {
     }
 });
 
-match.post('/match/buy-location', async (req, res) => {
+match.post('/buy-location', async (req, res) => {
     const { playerID, matchID, locationID } = req.body;
 
     if (!playerID || !matchID || !locationID) {
@@ -110,7 +110,7 @@ match.post('/match/buy-location', async (req, res) => {
     }
 });
 
-match.post('/match/buy-house', async (req, res) => {
+match.post('/buy-house', async (req, res) => {
     const { playerID, matchID, locationID } = req.body;
 
     if (!playerID || !matchID || !locationID) {
@@ -144,14 +144,42 @@ match.post('/match/buy-house', async (req, res) => {
     }
 });
 
-match.get('/matches', async (_req, res) => {
+match.post('/transfer-house', async (req, res) => {
+    const { sellerID, buyerID, matchID, locationID } = req.body;
+
+    if (!buyerID || !sellerID || !matchID || !locationID) {
+        return res.status(400).send({ error: 'Todos são obrigatórios!' });
+    }
+
+    const matches = new Database();
+    await matches.openTable(table);
+    
+    const match = db.one(matchID);
+    
+    if(match.started){
+        let sellerID;
+        let buyerID;
+
+        match.players.forEach((player, index) => {
+            if(player.id == sellerID) sellerID = index;
+            if(player.id == buyerID) buyerID = index;
+        });
+
+        match.players[sellerID].locations.splice[locationID, 1];
+        match.players[buyerID].locations.push({id: locationID, houses: 0});
+
+        matches.update_one(matchID, match);
+    }
+});
+
+match.get('/', async (_req, res) => {
     const db = new Database();
     await db.openTable(table);
 
     res.send(db.all());
 });
 
-match.get('/match/:id', async (req, res) => {
+match.get('/:id', async (req, res) => {
     const db = new Database();
     await db.openTable(table);
 
