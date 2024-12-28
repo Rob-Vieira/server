@@ -1,0 +1,21 @@
+NORMAL USER ACTIONS ON SERVER
+
+- Join a match.
+- Create a match.
+
+PLAYER ACTIONS ON SERVER
+
+- View your locations and money balance.
+- Leave the match.
+
+BANKER ACTIONS ON SERVER
+
+- Move the balance of a specific player.
+- Buy a location for a specific player.
+- Transfer a location between a specifics players.
+- Remove a location from a specific player.
+- Remove a specific player.
+- Buy a house for a specific player on a specific location.
+- Elect a new banker.
+- Close the match.
+- Start the match.

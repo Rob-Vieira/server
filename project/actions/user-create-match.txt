@@ -1,0 +1,29 @@
+COMPLETE FLOW
+
+0 - User stay in "Menu Principal" |-> 1
+
+1 - User click in "Novo Jogo" -> 2
+2 - App open "Novo Jogo" page -> <1>
+
+<1> - User click in the "Cancelar" button. -> <1 - 1>
+
+<1 - 1> - App close "Novo Jogo" page -> 0
+
+<1> - User click in the "Entrar" button - <1 - 2>
+
+<1 - 2> - 
+
+
+
+
+
+
+
+
+
+
+
+OBS:
+
+The player chooses a starting total balance.
+The player chooses a name of match.

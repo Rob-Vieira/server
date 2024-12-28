@@ -7,9 +7,25 @@
         "rent": [80, 1000, 2000, 3000, 8000],
         "price": 1000,
         "group": "Verde"
+      },
+      {
+        "id": 2,
+        "name": "Av. Monte Negro",
+        "type": 1,
+        "rent": [80, 1000, 2000, 3000, 8000],
+        "price": 2000,
+        "group": "Verde"
+      },
+      {
+        "id": 3,
+        "name": "Av. José Campos",
+        "type": 1,
+        "rent": [80, 1000, 2000, 3000, 8000],
+        "price": 3000,
+        "group": "Verde"
       }
     ],
     "setting": {
-      "autokey": 1
+      "autokey": 4
     }
   }

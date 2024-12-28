@@ -1,0 +1,11 @@
+NORMAL USERS:
+
+Normal users can perform simple actions in the app and on the server.
+
+PLAYERS:
+
+Players are regular users who join a match.
+
+BANKERS:
+
+Bankers are players in a match, but they control the game.

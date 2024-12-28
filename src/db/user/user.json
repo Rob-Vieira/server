@@ -5,9 +5,15 @@
       "name": "Marcely Maria",
       "username": "badgaalmah",
       "password": "teste123"
+    },
+    {
+      "id": 2,
+      "name": "Robson Vieira",
+      "username": "silgra",
+      "password": "teste123"
     }
   ],
   "setting": {
-    "autokey": 1
+    "autokey": 3
   }
 }

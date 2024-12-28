@@ -1,3 +1,28 @@
+/**
+ * 
+ * MATCH MODEL
+ * 
+ * id: number;
+ * created_at: string;
+ * remainingLocations: number[];  
+ * started: boolean;
+ * banker: number;
+ * startBalance: number;
+ * players: player[];
+ * 
+ * PLAYER MODEL
+ * 
+ * id: number;
+ * money: number;
+ * locations: location[];
+ * 
+ * LOCATION MODEL
+ * 
+ * id: number;
+ * houses: number;
+ * 
+**/
+
 import { Router } from 'express';
 import { Database } from '../../../db/database.js';
 
@@ -5,40 +30,41 @@ const match = Router();
 const table = 'match';
 
 match.post('/', async (req, res) => {
-    const { playerID } = req.body;
+    const { userID, startBalance = 25000 } = req.body;
 
-    if (!playerID) {
+    if (!userID) {
         return res.status(400).send({ error: 'Todos são obrigatórios!' });
     }
 
-    const created_at = new Date().toISOString();
     const match = new Database();
     const locations = new Database();
     
     await match.openTable(table);
-    await locations.openTable('locations');
-
+    await locations.openTable('location');
+    
     const locations_ids = locations.all().map((location) => location.id);
+    const created_at = new Date().toISOString();
 
-    db.create({
+    match.create({
         created_at: created_at,
+        remainingLocations: locations_ids,
+        started: false,
+        banker: userID,
+        startBalance: startBalance,
         players: [
           {
-            id: playerID,
-            money: 25000,
+            id: userID,
+            money: startBalance,
             locations: [],
-            isBanker: true
           }
         ],
-        remainingLocations: locations_ids,
-        started: false
     });
 });
 
-match.post('/enter', async (req, res) => {
-    const { playerID, matchID } = req.body;
+match.post('/join', async (req, res) => {
+    const { userID, matchID } = req.body;
 
-    if (!playerID || !matchID) {
+    if (!userID || !matchID) {
         return res.status(400).send({ error: 'Todos são obrigatórios!' });
     }
 
@@ -48,23 +74,24 @@ match.post('/enter', async (req, res) => {
     const match = db.one(matchID);
 
     if(!match.started){
-        const playerInMatch = match.players.filter((player) => player.id == playerID);
+        const playerInMatch = match.players.filter((player) => player.id == userID);
     
-        if(playerInMatch.lenght == 0){
+        console.log(playerInMatch.length);
+
+        if(playerInMatch.length == 0){
             db.update_one(matchID, {
                 players: [
                     ...match.players,
                     {
-                        id: playerID,
-                        money: 25000,
-                        locations: [],
-                        isBanker: false
+                        id: userID,
+                        money: match.startBalance,
+                        locations: []
                     }
                 ]
             });
         }
         else{
-            return res.status(401).send({ error: `O jogador ${playerID}, já está na partida!` });
+            return res.status(401).send({ error: `O jogador ${userID}, já está na partida!` });
         }
     }
     else{
@@ -81,31 +108,37 @@ match.post('/buy-location', async (req, res) => {
 
     const matches = new Database();
     await matches.openTable(table);
-    
-    const match = db.one(matchID);
+
+    const match = matches.one(matchID);
     
     if(match.started){
-        let location_selled = false
+        const remainingIndex = match.remainingLocations.findIndex((id) => id == locationID);
 
-        for(let player in match.players){
-            if(location_selled) break;
+        if(remainingIndex > -1){
+            const locations = new Database();
+            await locations.openTable('location');
 
-            player_locations = player.locations.filter((location) => location.id == locationID);
-
-            if(player_locations.lenght > 0){
-                location_selled = true;
-            }
-        }
-
-        if(!location_selled){
+            const location = locations.one(locationID);
             const playerIndex = match.players.findIndex(player => player.id == playerID);
-            match.players[playerIndex].locations.push({id: locationID, houses: 0});
-
-            matches.update_one(matchID, match);
+            const player = match.players[playerIndex];
+            
+            if((player.money - location.price) >= 1){
+                player.locations.push({id: locationID, houses: 0});
+                player.money -= location.price;
+                match.remainingLocations.splice(remainingIndex, 1);
+                matches.update_one(matchID, match);
+                return res.status(200).send({ error: 'Compra realizada.' });
+            }
+            else{
+                return res.status(400).send({ error: 'Jogador não possuí saldo suficiente para realizar a compra.' });
+            }
         }
         else{
             return res.status(400).send({ error: 'Localização já foi comprada' });
         }
+    }
+    else{
+        return res.status(400).send({ error: 'A partida ainda foi iniciada.' });
     }
 });
 
