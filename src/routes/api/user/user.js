@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { Database } from '../../../db/database.js';
 
-const player = Router();
-const table = 'player';
+const players = Router();
+const table = 'user';
 
-player.post('/', async (req, res) => {
+players.post('/', async (req, res) => {
     const { name, money, locations } = req.body;
 
     if (!name || !money || !locations) {
@@ -12,7 +12,7 @@ player.post('/', async (req, res) => {
     }
 
     const db = new Database();
-    await db.openTable('player');
+    await db.openTable('players');
 
     const id = await db.create({
         name,
@@ -23,14 +23,14 @@ player.post('/', async (req, res) => {
     res.status(201).send({ id });
 });
 
-player.get('/', async (req, res) => { 
+players.get('/', async (req, res) => { 
     const db = new Database();
-    await db.openTable('player');
+    await db.openTable('players');
 
     res.send(db.all());
 });
 
-player.get('/:id', async (req, res) => {
+players.get('/:id', async (req, res) => {
     const db = new Database();
     await db.openTable(table);
 
@@ -39,4 +39,4 @@ player.get('/:id', async (req, res) => {
     res.send(item);
 });
 
-export default player;
+export default players;

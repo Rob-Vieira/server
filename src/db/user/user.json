@@ -1,0 +1,13 @@
+{
+  "user": [
+    {
+      "id": 1,
+      "name": "Marcely Maria",
+      "username": "badgaalmah",
+      "password": "teste123"
+    }
+  ],
+  "setting": {
+    "autokey": 1
+  }
+}
