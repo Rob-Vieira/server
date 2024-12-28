@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Database } from '../../../db/database.js';
-import players from '../players/players.js';
+import players from '../user/user.js';
 
 const match = Router();
 const table = 'match';
